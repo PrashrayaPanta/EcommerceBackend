@@ -29,7 +29,6 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "nodejsBrandImage",
-    allowedFormat: ["png", "jpeg"],
     // public_id: (req, file) => file.fieldname + "_" + Date.now(),
   },
 });
@@ -61,7 +60,15 @@ brandRoute.put("/:id", isAuthenticated , isAdmin, upload.single("image"), brandC
 
 
 
-brandRoute.get("/", isAuthenticated, isAdmin, brandCtrl.getAllBrand);
+
+brandRoute.get("/",   brandCtrl.getAllBrand);
+
+
+
+
+
+
+
 
 
 

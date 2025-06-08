@@ -10,15 +10,20 @@ const brandCtrl = {
     console.log("Inside createBrand controller");
 
 
-
-    const uploadedindbFile =  await File.create({
-        url: req.file.path,
-        public_id: req.file.filename,
-
-   })
+    console.log(req.file);
 
 
    const {name,slogan} = req.body;
+
+
+
+   const slug = name.split(" ")?.join("-");
+
+
+     //  //!empty value validation
+   if(!name || !slogan || !req.file || !slug) {
+       throw new Error("All fields are required");
+   }
 
 
 
@@ -26,31 +31,25 @@ const brandCtrl = {
 
 
    if(brandDocument){
-      throw new Error("Brand with this name already exists");
-   }
-
-
-   const slug = name.split(" ").join("-");
-
-
-
-   //!empty value validation
-   if(!name || !slogan || !req.file || !slug) {
-       throw new Error("All fields are required");
+      throw new Error("Brand with this name  already exists");
    }
 
 
     // Create the brand
 
-    await Brand.create({
+  const brand =   await Brand.create({
         name,
         slogan,
         logo: {
-            url: uploadedindbFile.url,
-            public_id: uploadedindbFile.public_id,
+            url: req.file.path,
+            public_id: req.file.filename,
         },
         slug
     })
+
+    res.status(201).json({message:"Brand created successfully", brand})
+
+
   }),
 
 
@@ -71,8 +70,6 @@ const brandCtrl = {
     deleteImageByPublicId(brand.logo.public_id);  
 
 
-    // Delete the logo file from the File model
-    await File.findOneAndDelete({ public_id: brand.logo.public_id , url: brand.logo.url });
     if (!brand.logo.public_id) {
       return res.status(404).json({ message: "Logo file not found" });
     }
@@ -113,22 +110,20 @@ const brandCtrl = {
     const {name, slogan} = req.body;
 
 
+
+    console.log(name , slogan)
+
+
     const BrandDocument = await Brand.findById(id);
 
+      // Delete the old image from Cloudinary
 
-    if(BrandDocument.name === name && BrandDocument.slogan){
+    deleteImageByPublicId(BrandDocument.logo.public_id);        
+      
 
-      throw new Error("Brand name and slogan are unchanged, please modify them");
-
+    if(!req.file){
+      throw new Error("The image field value shouldnot be empty");
     }
-
-
-
-    if(!req.file || !name || !slogan ){
-      throw new Error("The field value should not be empty");
-    }
-
-
 
 
   const updatedBrand =   await Brand.findByIdAndUpdate(id, {

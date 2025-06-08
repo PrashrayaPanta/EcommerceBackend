@@ -7,6 +7,7 @@ const brandSchema = new mongoose.Schema(
 
         type:String,
         required:true,
+        unique:true,
 
     },
 
@@ -30,7 +31,6 @@ const brandSchema = new mongoose.Schema(
 
       type: String,
       required: true,
-      unique: true,
 
     }
 
