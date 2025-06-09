@@ -1,9 +1,8 @@
 const asyncHandler = require("express-async-handler");
-const File = require("../model/File"); // Import the File model
 
 const mongoose = require("mongoose");
 const Brand = require("../model/Brand");
-const deleteImageByPublicId = require("../utils/cloudinaryUtils");
+const {deleteImageByPublicId} = require("../utils/cloudinaryUtils.js");
 
 const brandCtrl = {
   createBrand: asyncHandler(async (req, res) => {
@@ -105,6 +104,8 @@ const brandCtrl = {
   EditCertainBrand: asyncHandler(async(req, res) =>{
 
 
+
+
     const {id} = req.params;
 
     const {name, slogan} = req.body;
@@ -142,6 +143,24 @@ const brandCtrl = {
     });
 
   })
+
+
+,
+  GetCertainBrand: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const brand = await Brand.findById(id);
+
+    if (!brand) {
+      return res.status(404).json({ message: "Brand not found" });
+    }
+
+    res.json({
+      message: "Brand fetched successfully",
+      brand,
+    });
+  })
+
 
 
 };

@@ -16,6 +16,12 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
+const { deleteImageHandler, getImageDetailsHandler } = require("../controller/File.js");
+const { getImageByPublicId } = require("../utils/cloudinaryUtils.js");
+
+
+
+
 
 // Configure Cloudinary
 cloudinary.config({
@@ -60,8 +66,21 @@ brandRoute.put("/:id", isAuthenticated , isAdmin, upload.single("image"), brandC
 
 
 
+brandRoute.get("/:id",  brandCtrl.GetCertainBrand);
+
 
 brandRoute.get("/",   brandCtrl.getAllBrand);
+
+
+
+brandRoute.delete("/:id/image/:whichfolderinside/:publicId", isAuthenticated, isAdmin,
+  deleteImageHandler
+);
+
+
+
+brandRoute.get("/image/:publicId", getImageDetailsHandler)
+
 
 
 

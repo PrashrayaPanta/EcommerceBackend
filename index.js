@@ -1,4 +1,4 @@
-console.log("IU am fiorst line");
+
 
 const express = require("express");
 
@@ -22,6 +22,7 @@ const productRoute = require("./Routes/productRoute.js");
 const orderRoute = require("./Routes/orderRoute.js");
 const brandRoute = require("./Routes/brandRoute.js");
 const addressRoute = require("./Routes/addressRoute.js");
+
 
 
 const PORT = process.env.PORT || 3000;
@@ -59,6 +60,7 @@ app.use("/api/order", orderRoute);
 
 
 app.use("/api/brand", brandRoute);
+
 
 
 

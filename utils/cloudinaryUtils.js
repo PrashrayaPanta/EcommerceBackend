@@ -9,8 +9,14 @@ cloudinary.config({
 
 // Function to delete an image by public_id
 const deleteImageByPublicId = async (publicId) => {
+
+
   try {
     const result = await cloudinary.uploader.destroy(publicId);
+
+    
+
+
     console.log("Image deleted successfully:", result);
     return result;
   } catch (error) {
@@ -19,4 +25,23 @@ const deleteImageByPublicId = async (publicId) => {
   }
 };
 
-module.exports = deleteImageByPublicId;
+// Function to get image details by public_id
+const getImageByPublicId = async (publicId) => {
+
+
+  console.log(publicId);
+
+  try {
+    const result = await cloudinary.api.resource(publicId);
+    console.log("Image details fetched successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error fetching image details:", error.message);
+    throw error;
+  }
+};
+
+module.exports = {
+  deleteImageByPublicId,
+  getImageByPublicId,
+};
