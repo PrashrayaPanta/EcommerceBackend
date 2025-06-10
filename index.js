@@ -25,6 +25,9 @@ const addressRoute = require("./Routes/addressRoute.js");
 
 
 
+
+
+
 const PORT = process.env.PORT || 3000;
 
 //allowing all the port to acess the backend server with ip.
@@ -60,6 +63,8 @@ app.use("/api/order", orderRoute);
 
 
 app.use("/api/brand", brandRoute);
+
+
 
 
 

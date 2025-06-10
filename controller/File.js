@@ -1,14 +1,26 @@
-const { getImageByPublicId, deleteImageByPublicId } = require("../utils/cloudinaryUtils.js"); // Correctly destructure the import
-const Brand = require("../model/Brand"); // Import the Brand model
+const Brand = require("../model/Brand"); 
+
+
+const cloudinary = require("cloudinary").v2;// Import the Brand model
 
 const getImageDetailsHandler = async (req, res) => {
+
+  console.log("I am insdie the getImge detaiuls handler")
   console.log("I am inside the get Image Details Handler");
   const { publicId } = req.params; // Get the public_id from request parameters
 
   console.log(publicId);
 
   try {
-    const imageDetails = await getImageByPublicId(publicId);
+    // const imageDetails = await getImageByPublicId(publicId);
+
+    const result = await cloudinary.api.resource(publicId);
+
+    console.log(result);
+    
+    console.log("Image details fetched successfully:", result);
+
+
     res.status(200).json({
       message: "Image details fetched successfully",
       imageDetails,
@@ -21,17 +33,22 @@ const getImageDetailsHandler = async (req, res) => {
   }
 };
 
-const deleteImageHandler = async (req, res) => {
-  console.log("I am inside the delete image handler");
-  const { publicId, whichfolderinside, id } = req.params; // Get the public_id, folder, and brand ID from request parameters
+const deleteOnlyImageHandler = async (req, res) => {
+ 
+  const {id} = req.params;
+
+  const { publicId } = req.params;
+  
+  const {whichfolderinside} = req.params; // Get the folder name from request parameters
+
 
   const publicIdFull = whichfolderinside + "/" + publicId;
 
-  console.log(publicIdFull);
+  // console.log(publicIdFull);
 
   try {
     // Delete the image from Cloudinary
-     await deleteImageByPublicId(publicIdFull);
+     await cloudinary.uploader.destroy(publicIdFull);
 
     // Update the Brand document to remove the logo
      await Brand.findByIdAndUpdate(
@@ -54,5 +71,5 @@ const deleteImageHandler = async (req, res) => {
 
 module.exports = {
   getImageDetailsHandler,
-  deleteImageHandler,
+  deleteOnlyImageHandler,
 };

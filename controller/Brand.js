@@ -2,14 +2,23 @@ const asyncHandler = require("express-async-handler");
 
 const mongoose = require("mongoose");
 const Brand = require("../model/Brand");
-const {deleteImageByPublicId} = require("../utils/cloudinaryUtils.js");
+
+
+
+
+const cloudinary = require("cloudinary").v2;
 
 const brandCtrl = {
   createBrand: asyncHandler(async (req, res) => {
     console.log("Inside createBrand controller");
 
+    console.log(req.body)
+
 
     console.log(req.file);
+
+
+    
 
 
    const {name,slogan} = req.body;
@@ -20,7 +29,7 @@ const brandCtrl = {
 
 
      //  //!empty value validation
-   if(!name || !slogan || !req.file || !slug) {
+   if(!name || !slogan || !req.file) {
        throw new Error("All fields are required");
    }
 
@@ -53,37 +62,36 @@ const brandCtrl = {
 
 
   deleteCertainBrand: asyncHandler(async (req, res) => {
-
-
     const { id } = req.params;
 
-
-    const brand = await Brand.findByIdAndDelete(id);
-
+    // Find the brand by ID
+    const brand = await Brand.findById(id);
 
     if (!brand) {
       return res.status(404).json({ message: "Brand not found" });
     }
 
-    // Delete the logo image from Cloudinary using the public_id
-    deleteImageByPublicId(brand.logo.public_id);  
+    // Check if the brand has a logo and delete it from Cloudinary
+    if (brand.logo && brand.logo.public_id) {
+      try {
+        // await deleteImageByPublicId(brand.logo.public_id);
+
+       await cloudinary.uploader.destroy(brand.logo.public_id);
 
 
-    if (!brand.logo.public_id) {
-      return res.status(404).json({ message: "Logo file not found" });
+        console.log("Image deleted successfully from Cloudinary.");
+      } catch (error) {
+        console.error("Error deleting image from Cloudinary:", error.message);
+        return res.status(500).json({ message: "Failed to delete image from Cloudinary", error: error.message });
+      }
     }
 
-    // Respond with success message and deleted brand information
-
-    console.log("Brand deleted successfully:", brand);
+    // Delete the brand from the database
+    await Brand.findByIdAndDelete(id);
 
     res.json({
-      message: "Brand deleted successfully",
-      deletedBrand: brand,
+      message: "Brand and associated image deleted successfully",
     });
-
-
-
   }),
 
 
@@ -92,11 +100,9 @@ const brandCtrl = {
 
     const brands = await Brand.find();
 
-    if (!brands || brands.length === 0) {
-      return res.status(404).json({ message: "No brands found" });
-    }
 
-    res.json({ message: "All Brands fetched successfully", brands });
+
+    res.json({  brands });
 
   }),
 
@@ -108,6 +114,9 @@ const brandCtrl = {
 
     const {id} = req.params;
 
+
+
+
     const {name, slogan} = req.body;
 
 
@@ -117,11 +126,20 @@ const brandCtrl = {
 
     const BrandDocument = await Brand.findById(id);
 
+
+    if(!BrandDocument){
+      throw new Error("Brand not found in ");
+    }
+
       // Delete the old image from Cloudinary
+    if (BrandDocument.logo && BrandDocument.logo.public_id)
+    {
+      await cloudinary.uploader.destroy(BrandDocument?.logo?.public_id);
 
-    deleteImageByPublicId(BrandDocument.logo.public_id);        
+    }
+
+  
       
-
     if(!req.file){
       throw new Error("The image field value shouldnot be empty");
     }

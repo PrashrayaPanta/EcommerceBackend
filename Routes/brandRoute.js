@@ -16,8 +16,9 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const { deleteImageHandler, getImageDetailsHandler } = require("../controller/File.js");
-const { getImageByPublicId } = require("../utils/cloudinaryUtils.js");
+const { deleteOnlyImageHandler} = require("../controller/File.js");
+// const { getImageByPublicId } = require("../utils/cloudinaryUtils.js");
+// const { login } = require("../controller/user.js");
 
 
 
@@ -35,7 +36,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "nodejsBrandImage",
-    // public_id: (req, file) => file.fieldname + "_" + Date.now(),
+    public_id: (req, file) => file.fieldname + "_" + Date.now(),
   },
 });
 
@@ -74,14 +75,49 @@ brandRoute.get("/",   brandCtrl.getAllBrand);
 
 
 brandRoute.delete("/:id/image/:whichfolderinside/:publicId", isAuthenticated, isAdmin,
-  deleteImageHandler
+  deleteOnlyImageHandler 
 );
 
 
 
-brandRoute.get("/image/:publicId", getImageDetailsHandler)
+brandRoute.get("/:nodejsBrandImage/image/:public_id", async (req, res) => {
+  try {
+    const { public_id } = req.params; // Corrected variable name
 
 
+    const { nodejsBrandImage } = req.params; // Get the nodejsBrand from request parameters
+
+
+    const publicIDFull = nodejsBrandImage + "/" + public_id; // Combine nodejsBrand and publicId
+
+    console.log(public_id);
+
+    console.log("Fetching details for publicId:", publicIDFull);
+
+    // Fetch image details from Cloudinary
+    const result = await cloudinary.api.resource(publicIDFull);
+
+    console.log(result.url);
+    
+
+    // console.log("Image details fetched successfully:", result.imageDetails);
+
+    // Send the result back to the client
+    res.status(200).json({
+      message: "Image details fetched successfully",
+      // imageDetails: result,
+      url: result.url
+    });
+  } catch (error) {
+    console.error("Error fetching image details:", error.message);
+
+    // Send an error response to the client
+    res.status(500).json({
+      message: "Failed to fetch image details",
+      error: error.message,
+    });
+  }
+});
 
 
 
