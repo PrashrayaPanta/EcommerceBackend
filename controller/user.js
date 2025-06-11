@@ -17,6 +17,10 @@ const userCtrl = {
       const { username, email, password } = req.body;
 
 
+      console.log(req.file);
+      
+
+
       
 
       //! Validations
@@ -25,28 +29,21 @@ const userCtrl = {
       }
 
          // Upload  each image public_id and Url in db
-    const images = await Promise.all(
-      req.files.map(async (file) => {
+
+     
         console.log("Getted all the object for sending to db");
         //Save the images into our database
 
-        const newFile = new File({
-          url: file.path,
-          public_id: file.filename,
-        });
+        // const newFile = new File({
+        //   url: req.file.path,
+        //   public_id: req.file.filename,
+        // });
 
-        await newFile.save();
+        // await newFile.save();
 
-        console.log(newFile);
+        // console.log(newFile);
 
-        return {
-          url: newFile.url,
-          public_id: newFile.public_id,
-        };
-      })
-    );
-
-
+    
 
     //! check if user alreday exist
 
@@ -66,13 +63,13 @@ const userCtrl = {
  
      //! create the user
  
-     images.map(async (profileimage) => {
+
        
        const userCreated = await User.create({
          username,
          password: hashedPassword,
          email,
-         profileImageUrl: profileimage.url,
+         profileImageUrl: req.file.path,
 
        });
  
@@ -85,9 +82,9 @@ const userCtrl = {
          username: userCreated.username,
          email: userCreated.email,
          id: userCreated._id,
-       });
+       })
      })   
-  }),
+  ,
 
   //!Login
 
@@ -122,6 +119,7 @@ const userCtrl = {
       id: user._id,
       email: user.email,
       username: user.username,
+      profileImageUrl: user.profileImageUrl,
     });
   }),
 

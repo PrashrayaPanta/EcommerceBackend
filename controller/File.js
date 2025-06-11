@@ -5,26 +5,39 @@ const cloudinary = require("cloudinary").v2;// Import the Brand model
 
 const getImageDetailsHandler = async (req, res) => {
 
-
-  const { publicId } = req.params; // Get the public_id from request parameters
-
-  console.log(publicId);
-
   try {
-    // const imageDetails = await getImageByPublicId(publicId);
-
-    const result = await cloudinary.api.resource(publicId);
-
-    console.log(result);
-    
-    console.log("Image details fetched successfully:", result);
 
 
-    res.status(200).json({
-      message: "Image details fetched successfully",
-      imageDetails,
-    });
+    const { filename, nodejsBrandImage } = req.params; // Extract parameters from the request
+
+    console.log("Fetching image for:", filename, nodejsBrandImage);
+
+    // Combine folder name and filename to form the public ID
+    const publicID = `${nodejsBrandImage}/${filename}`;
+
+    console.log("Fetching details for publicId:", publicID);
+
+
+    // console.log(publicID)
+
+    // Fetch image details from Cloudinary  `
+    const result = await cloudinary.api.resource(publicID);
+
+
+
+    // Check if the result contains a secure URL or if the image exists
+
+    // if (!result || !result.secure_url) {
+    //   return res.status(404).json({ message: "Image not found in Cloudinary" });
+    // }
+
+  
+    // Redirect the client to the image URL
+    res.redirect(result.secure_url);
   } catch (error) {
+    console.error("Error fetching image details:", error.message);
+
+    // Send an error response to the client
     res.status(500).json({
       message: "Failed to fetch image details",
       error: error.message,

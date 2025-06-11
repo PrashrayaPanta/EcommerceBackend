@@ -16,9 +16,8 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const { deleteOnlyImageHandler} = require("../controller/File.js");
-// const { getImageByPublicId } = require("../utils/cloudinaryUtils.js");
-// const { login } = require("../controller/user.js");
+const { deleteOnlyImageHandler, getImageDetailsHandler} = require("../controller/File.js");
+
 
 
 
@@ -80,48 +79,9 @@ brandRoute.delete("/:id/image/:whichfolderinside/:filename", isAuthenticated, is
 
 
 
-brandRoute.get("/:nodejsBrandImage/:filename", async (req, res) => {
-  try {
-
-
-
-    const { filename, nodejsBrandImage } = req.params; // Extract parameters from the request
-
-    console.log("Fetching image for:", filename, nodejsBrandImage);
-
-    // Combine folder name and filename to form the public ID
-    const publicID = `${nodejsBrandImage}/${filename}`;
-
-    console.log("Fetching details for publicId:", publicID);
-
-
-    // console.log(publicID)
-
-    // Fetch image details from Cloudinary  `
-    const result = await cloudinary.api.resource(publicID);
-
-
-    console.log(result);
-
-    // Check if the result contains a secure URL or if the image exists
-
-    // if (!result || !result.secure_url) {
-    //   return res.status(404).json({ message: "Image not found in Cloudinary" });
-    // }
-
-  
-    // Redirect the client to the image URL
-    res.redirect(result.secure_url);
-  } catch (error) {
-    console.error("Error fetching image details:", error.message);
-
-    // Send an error response to the client
-    res.status(500).json({
-      message: "Failed to fetch image details",
-      error: error.message,
-    });
-  }
-});
+brandRoute.get("/:nodejsBrandImage/:filename", 
+      getImageDetailsHandler
+);
 
 
 

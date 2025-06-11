@@ -39,25 +39,25 @@ const upload = multer({
 
 const userRoute = express.Router();
 
-userRoute.post("/register", upload.array("images"), userCtrl.register);
+userRoute.post("/register", upload.single("image"), userCtrl.register);
 userRoute.post("/login", userCtrl.login); // Login
 
 //! Admin  Route
 
 
 
-userRoute.get("/profile", isAuthenticated, isAdmin,  userCtrl.Profile);
+userRoute.get("/profile", isAuthenticated,   userCtrl.Profile);
 userRoute.put(
   "/profile/edit",
   isAuthenticated,
-  isAdmin,
+  // isAdmin,
   userCtrl.EditProfile
 ); // Edit profile
 
 userRoute.put(
   "/profile/password",
   isAuthenticated,
-  isAdmin,
+  // isAdmin,
   userCtrl.EditPassword
 ); // Update password
 userRoute.delete(
