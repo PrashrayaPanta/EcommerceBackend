@@ -74,40 +74,44 @@ brandRoute.get("/",   brandCtrl.getAllBrand);
 
 
 
-brandRoute.delete("/:id/image/:whichfolderinside/:publicId", isAuthenticated, isAdmin,
+brandRoute.delete("/:id/image/:whichfolderinside/:filename", isAuthenticated, isAdmin,
   deleteOnlyImageHandler 
 );
 
 
 
-brandRoute.get("/:nodejsBrandImage/image/:public_id", async (req, res) => {
+brandRoute.get("/:nodejsBrandImage/:filename", async (req, res) => {
   try {
-    const { public_id } = req.params; // Corrected variable name
 
 
-    const { nodejsBrandImage } = req.params; // Get the nodejsBrand from request parameters
+
+    const { filename, nodejsBrandImage } = req.params; // Extract parameters from the request
+
+    console.log("Fetching image for:", filename, nodejsBrandImage);
+
+    // Combine folder name and filename to form the public ID
+    const publicID = `${nodejsBrandImage}/${filename}`;
+
+    console.log("Fetching details for publicId:", publicID);
 
 
-    const publicIDFull = nodejsBrandImage + "/" + public_id; // Combine nodejsBrand and publicId
+    // console.log(publicID)
 
-    console.log(public_id);
+    // Fetch image details from Cloudinary  `
+    const result = await cloudinary.api.resource(publicID);
 
-    console.log("Fetching details for publicId:", publicIDFull);
 
-    // Fetch image details from Cloudinary
-    const result = await cloudinary.api.resource(publicIDFull);
+    console.log(result);
 
-    console.log(result.url);
-    
+    // Check if the result contains a secure URL or if the image exists
 
-    // console.log("Image details fetched successfully:", result.imageDetails);
+    // if (!result || !result.secure_url) {
+    //   return res.status(404).json({ message: "Image not found in Cloudinary" });
+    // }
 
-    // Send the result back to the client
-    res.status(200).json({
-      message: "Image details fetched successfully",
-      // imageDetails: result,
-      url: result.url
-    });
+  
+    // Redirect the client to the image URL
+    res.redirect(result.secure_url);
   } catch (error) {
     console.error("Error fetching image details:", error.message);
 

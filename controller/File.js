@@ -5,8 +5,7 @@ const cloudinary = require("cloudinary").v2;// Import the Brand model
 
 const getImageDetailsHandler = async (req, res) => {
 
-  console.log("I am insdie the getImge detaiuls handler")
-  console.log("I am inside the get Image Details Handler");
+
   const { publicId } = req.params; // Get the public_id from request parameters
 
   console.log(publicId);
@@ -37,12 +36,12 @@ const deleteOnlyImageHandler = async (req, res) => {
  
   const {id} = req.params;
 
-  const { publicId } = req.params;
+  const { filename } = req.params;
   
   const {whichfolderinside} = req.params; // Get the folder name from request parameters
 
 
-  const publicIdFull = whichfolderinside + "/" + publicId;
+  const publicIdFull = whichfolderinside + "/" + filename;
 
   // console.log(publicIdFull);
 

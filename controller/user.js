@@ -117,7 +117,7 @@ const userCtrl = {
     const token = jwt.sign({ id: user._id }, "anykey", { expiresIn: "30d" });
 
     res.json({
-      message: "Login Success",
+      // message: "Login Success",
       token,
       id: user._id,
       email: user.email,
@@ -135,7 +135,7 @@ const userCtrl = {
       throw new Error("User not found");
     }
 
-    return res.json({ user, message: "Fetched user profile successfully" });
+    return res.json({ user });
   }),
 
   EditProfile: asyncHandler(async (req, res) => {
@@ -145,28 +145,34 @@ const userCtrl = {
     const { username, email } = req.body;
 
 
+    console.log(username, email)
+
+
     //! Validations
     if(!username || !email){
       throw new Error("All fields are required");
     }
 
     
-    const userFound = await User.findById(req.user);
+    const userFound = await User.findById(req.user_id);
 
 
-    const {username1, email1} = userFound;
+    console.log(userFound);
+    
+
+
 
 
     //! Check if the user is trying to update the same username and email
 
-    if(username1 === username || email1 === email){
+    if(userFound.username === username && userFound.email === email){
       return res.status(400).json({message:"No changes made"});
     }
 
 
     //! Returned the document after updation takes place if new:true
     const updatedUser = await User.findByIdAndUpdate(
-      req.user,
+      req.user_id,
       { username, email },
       { new: true }
     ).select("-posts -password");
@@ -182,7 +188,7 @@ const userCtrl = {
 
     const { OldPassword } = req.body;
 
-    const user = await User.findById(req.user);
+    const user = await User.findById(req.user_id);
 
     const isMatch = await bcrypt.compare(OldPassword, user.password);
 
@@ -201,7 +207,7 @@ const userCtrl = {
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
     const userupdated = await User.findByIdAndUpdate(
-      req.user,
+      req.user_id,
       { password: hashedPassword },
       { new: true }
     ).select("-posts -password");
