@@ -18,7 +18,7 @@ const addressSchema = new mongoose.Schema({
     required: true,
   },
   houseNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
   majorLandMark: {

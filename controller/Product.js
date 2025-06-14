@@ -13,38 +13,14 @@ const Category = require("../model/Category.js");
 
 const productCtrl = {
   createProduct: asyncHandler(async (req, res) => {
-    const { name, description, categoryName, initialPrice, discountPercentage, colors, sizes, stock } = req.body;
+    const { name, description, categoryId, initialPrice, discountPercentage, colors, sizes, stock } = req.body;
 
 
     console.log(req.files);
  
     //By default the data coming form data is string no matter what you send 
-    console.log(name, description, categoryName, initialPrice,  discountPercentage, colors, sizes, stock);
+    console.log(name, description, categoryId, initialPrice,  discountPercentage, colors, sizes, stock);
     
-
-
-    // console.log(typeof name, typeof finalPrice, typeof initialPrice, typeof discountPercentage, typeof colors, typeof sizes, typeof stock);
-    // console.log(typeof sizes);
-    // console.log(typeof colors);
-
-
-
-    // console.log(typeof sizes);
-    
-    
-
-
-
-
-    
-
-
-    // console.log(typeof sizes);
-
-    // console.log(typeof colors);
-
-
-    // console.log(req.files)
 
     // Parse JSON strings for colors and sizes if they are sent as strings
     const parsedColors = typeof colors === "string" ? JSON.parse(colors) : colors;
@@ -61,7 +37,7 @@ const productCtrl = {
 
     //! Empty Value Validation
   
-    if (!name || !description || !categoryName || !initialPrice || !discountPercentage || !parsedColors || !parsedSizes || !stock) {
+    if (!name || !description || !categoryId || !initialPrice || !discountPercentage || !parsedColors || !parsedSizes || !stock) {
       return res.status(400).json({ message: "Empty value halis" });
     }
 
@@ -74,20 +50,21 @@ const productCtrl = {
 
 
 
-
-
     const slug = name.split(" ").join("-")
 
 
     console.log(slug);
 
 
-    // Find the category by name
-    const category = await Category.findOne({ categoryName });
+    // const categoryDocument = await Category.findOne({_id: categoryId});
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
+
+    // console.log(categoryDocument)
+
+    const categoryDoc = await Category.findById(categoryId);
+
+    console.log(categoryDoc)
+
 
 
     const images = await Promise.all(
@@ -118,7 +95,7 @@ const productCtrl = {
       colors: parsedColors,
       sizes: parsedSizes,
       stock,
-      category_id: category._id,
+      category_id: categoryDoc._id,
     });
 
 

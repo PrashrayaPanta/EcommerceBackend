@@ -18,12 +18,6 @@ const isAdmin = require("../middleware/isAdmin.js");
 categoryRoute.post("/", isAuthenticated, isAdmin,  categoryCtrl.createCategory);
 
 
-categoryRoute.get("/",  isAuthenticated,  categoryCtrl.getAllCategory);
-
-
-categoryRoute.get("/:id", isAuthenticated, isAdmin,  categoryCtrl.getCertainCategory);
-
-
 
 categoryRoute.put("/:id", isAuthenticated, isAdmin, categoryCtrl.EditCertainCategory);
 
@@ -31,30 +25,41 @@ categoryRoute.put("/:id", isAuthenticated, isAdmin, categoryCtrl.EditCertainCate
 categoryRoute.delete("/:id", isAuthenticated, isAdmin, categoryCtrl.deleteCategory);
 
 
-//! Customer part
-
-
-categoryRoute.get("/categories", isAuthenticated, categoryCtrl.getAllCategory);
-
-
-categoryRoute.get("/categories/:id", isAuthenticated, categoryCtrl.getCertainCategory)
+categoryRoute.get("/",  isAuthenticated,   categoryCtrl.getAllCategory);
 
 
 
-categoryRoute.get("/categories/:id/posts", isAuthenticated,  categoryCtrl.getCertainCategoryProducts)
+
+categoryRoute.get("/:id", isAuthenticated,   categoryCtrl.getCertainCategory);
 
 
 
-//! Normal Part
 
-categoryRoute.get("/frontend/categories", categoryCtrl.getAllCategory);
+//! Customer part and //!Normal User
+
+
+categoryRoute.get("/frontend/categories",  categoryCtrl.getAllCategory);
+
 
 
 categoryRoute.get("/frontend/categories/:id",  categoryCtrl.getCertainCategory)
 
 
 
-categoryRoute.get("/frontend/categories/:id/products", categoryCtrl.getCertainCategoryProducts)
+categoryRoute.get("/frontend/categories/:id/posts",   categoryCtrl.getCertainCategoryProducts)
+
+
+
+//! Normal Part
+
+// categoryRoute.get("/frontend/categories", categoryCtrl.getAllCategory);
+
+
+// categoryRoute.get("/frontend/categories/:id",  categoryCtrl.getCertainCategory)
+
+
+
+// categoryRoute.get("/frontend/categories/:id/products", categoryCtrl.getCertainCategoryProducts)
 
 
 

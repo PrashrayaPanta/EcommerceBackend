@@ -41,6 +41,10 @@ const orderCtrl = {
     });
 
     res.json(createOrder);
+
+
+
+
     console.log(createOrder);
   }),
 
@@ -116,6 +120,21 @@ const orderCtrl = {
       order: orderUpdated,
     });
   }),
+
+
+  getCustomerOrderWithProduct: asyncHandler(async(req, res) =>{
+
+    const orders = await Order.find().populate("user_id");
+
+
+    console.log(orders);
+
+
+    
+
+
+
+  })
 };
 
 module.exports = orderCtrl;

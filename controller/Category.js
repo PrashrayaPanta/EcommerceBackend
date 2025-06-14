@@ -7,22 +7,25 @@ const Post = require("../model/Product.js");
 
 const categoryCtrl = {
   createCategory: asyncHandler(async (req, res) => {
-    const { categoryName} = req.body;
-
-    console.log(categoryName);
+    const { name} = req.body;
 
 
-    const slug = categoryName.split(" ").join("-")
+
+    const slug = name.toLowerCase();
+
+
+
+    // console.log(slug);
 
     //! Track the uniqueness of categoryName field
 
-    const category = await Category.findOne({ categoryName });
+    const category = await Category.findOne({ name });
 
-    if (categoryName === category?.categoryName) {
+    if (category) {
       return res.status(400).json({ message: "Category should be unique" });
     }
 
-    const categoryCreated = await Category.create({ categoryName, slug });
+    const categoryCreated = await Category.create({ name, slug });
 
     res.status(201).json({ message: "Created successfully", categoryCreated });
   }),
@@ -40,6 +43,8 @@ const categoryCtrl = {
   }),
 
   getAllCategory: asyncHandler(async (req, res) => {
+
+    console.log("I am inside get all category");
     const Categories = await Category.find();
 
     res.json({ message: "Get all category", Categories }).status(203);
@@ -70,7 +75,10 @@ const categoryCtrl = {
 
   EditCertainCategory: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { categoryName } = req.body;
+    const { name } = req.body;
+
+
+    const slug = name.toLowerCase();
 
     const categoryDocument = await Category.findById(id);
 
@@ -78,7 +86,7 @@ const categoryCtrl = {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    if (categoryDocument.categoryName === categoryName) {
+    if (categoryDocument.name === name) {
       return res.json({
         message: "Category name is unchanged, please modify it",
       });
@@ -86,7 +94,7 @@ const categoryCtrl = {
 
     const afterUpdation = await Category.findByIdAndUpdate(
       id,
-      { categoryName },
+      { name, slug },
       { new: true }
     );
 
