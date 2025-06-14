@@ -99,6 +99,8 @@ productRoute.get("/frontend/products/:id/category", productCtrl.getCertainproduc
 
 productRoute.get("/latestproduct",  productCtrl.Latestproducts);
 
+productRoute.get("/frontend/categories/:id/products", productCtrl.getAllProductByCategoryId)
+
 
 
 module.exports = productRoute;

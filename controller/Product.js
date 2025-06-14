@@ -140,7 +140,7 @@ const productCtrl = {
   }),
 
   getAllproduct: asyncHandler(async (req, res) => {
-    const products = await Product.find().select("-initialPrice -finalPrice");
+    const products = await Product.find();
 
     
 
@@ -167,6 +167,20 @@ const productCtrl = {
     });
   }),
 
+
+  getAllProductByCategoryId: asyncHandler(async(req, res) =>{
+
+
+    const {id} = req.params;
+
+    const products = await Product.find({category_id: id});
+
+
+    console.log(products);
+
+
+  })
+,
 
 
   //! Update the product
