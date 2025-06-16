@@ -15,17 +15,11 @@ const brandCtrl = {
     console.log(req.body)
 
 
-    console.log(req.file);
-
-
-    
-
-
    const {name,slogan} = req.body;
 
 
 
-   const slug = name.split(" ")?.join("-");
+   const slug = name.toLowerCase();
 
 
      //  //!empty value validation
@@ -56,6 +50,9 @@ const brandCtrl = {
     })
 
     res.status(201).json({message:"Brand created successfully", brand})
+
+
+
 
 
   }),

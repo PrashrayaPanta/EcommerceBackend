@@ -11,9 +11,17 @@ const File = require("../model/File.js");
 const Category = require("../model/Category.js");
 
 
+
+const Brand = require("../model/Brand.js");
+
+
 const productCtrl = {
   createProduct: asyncHandler(async (req, res) => {
     const { name, description, categoryId, initialPrice, discountPercentage, colors, sizes, stock } = req.body;
+
+
+
+    const {brandId} = req.body;
 
 
     console.log(req.files);
@@ -61,9 +69,16 @@ const productCtrl = {
 
     // console.log(categoryDocument)
 
-    const categoryDoc = await Category.findById(categoryId);
+    const categoryDocById = await Category.findById(categoryId);
 
-    console.log(categoryDoc)
+    console.log(categoryDocById);
+
+
+
+    const brandDocById = await Brand.findById(brandId);
+
+
+
 
 
 
@@ -95,7 +110,8 @@ const productCtrl = {
       colors: parsedColors,
       sizes: parsedSizes,
       stock,
-      category_id: categoryDoc._id,
+      category_id: categoryDocById._id,
+      brand_id: brandDocById._id
     });
 
 
@@ -177,6 +193,48 @@ const productCtrl = {
 
 
     console.log(products);
+
+
+  }),
+
+
+
+
+  getAllProductByBrandId: asyncHandler(async(req, res) =>{
+
+
+    // const {id} = req.params;
+
+
+    // console.log(id);
+
+
+    const {slug} = req.params;
+
+
+    console.log(slug);
+
+
+
+
+    
+    
+
+    // const {slug} = req.params;
+
+
+    // console.log(slug);
+
+    const products = await Product.find({slug: slug  });
+
+
+    console.log(products);
+    
+
+    res.json({products})
+
+
+
 
 
   })

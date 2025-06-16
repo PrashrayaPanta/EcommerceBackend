@@ -102,5 +102,8 @@ productRoute.get("/latestproduct",  productCtrl.Latestproducts);
 productRoute.get("/frontend/categories/:id/products", productCtrl.getAllProductByCategoryId)
 
 
+productRoute.get("/frontend/brands/:slug/products", productCtrl.getAllProductByBrandId )
+
+
 
 module.exports = productRoute;

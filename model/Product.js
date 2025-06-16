@@ -91,6 +91,15 @@ const productSchema = new mongoose.Schema({
     ref: "Category", // Reference to Category model
     required: true,
   },
+
+  brand_id:{
+
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"Brand",
+    required:true
+
+
+  }
 });
 
 const Product = mongoose.model("Product", productSchema);
