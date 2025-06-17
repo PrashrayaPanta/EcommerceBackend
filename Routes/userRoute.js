@@ -6,7 +6,7 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const isAdmin = require("../middleware/isAdmin");
 
-// console.log("I am inside the userroute")
+
 
 // Configure Cloudinary
 cloudinary.config({

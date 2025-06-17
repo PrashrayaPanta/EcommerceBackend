@@ -6,7 +6,7 @@ const Product = require("../model/Product.js");
 
 const User = require("../model/User.js");
 
-const File = require("../model/File.js");
+
 
 const Category = require("../model/Category.js");
 const Order = require("../model/Order.js");
@@ -128,6 +128,8 @@ const orderCtrl = {
 
 
     console.log(orders);
+
+    res.json({orders})
 
 
     

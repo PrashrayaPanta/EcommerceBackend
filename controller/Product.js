@@ -6,13 +6,17 @@ const Product = require("../model/Product.js");
 
 const User = require("../model/User.js");
 
-const File = require("../model/File.js");
+
+const cloudinary = require("cloudinary").v2;// Import the Brand model
+
+
 
 const Category = require("../model/Category.js");
 
 
 
 const Brand = require("../model/Brand.js");
+const { deleteOnlyImageHandler } = require("./File.js");
 
 
 const productCtrl = {
@@ -28,9 +32,13 @@ const productCtrl = {
  
     //By default the data coming form data is string no matter what you send 
     console.log(name, description, categoryId, initialPrice,  discountPercentage, colors, sizes, stock);
+
+
+
+    
     
 
-    // Parse JSON strings for colors and sizes if they are sent as strings
+    // Parse JSON strings for colors and sizes
     const parsedColors = typeof colors === "string" ? JSON.parse(colors) : colors;
     const parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
 
@@ -84,16 +92,9 @@ const productCtrl = {
 
     const images = await Promise.all(
       req.files.map(async (file) => {
-        const newFile = new File({
+        return {
           url: file.path,
           public_id: file.filename,
-        });
-
-        await newFile.save();
-
-        return {
-          url: newFile.url,
-          public_id: newFile.public_id,
         };
       })
     );
@@ -124,34 +125,29 @@ const productCtrl = {
   deleteproduct: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    // Find the product and verify the user owns it
-    const product = await Product.findOne({ _id: id, author: req.user });
+    //find product By Id
+    const productFound = await Product.findById(id);
 
-    if (!product) {
-      return res.status(404).json({
-        status: "Failed",
-        message: "you don't have permission to delete this product",
-      });
-    }
+    console.log(productFound);
 
-    // Delete the product
+    productFound?.images.map(async image => {
 
-    // {new:true} doesnt show any effect on delete
-    const afterDeletion = await Product.findByIdAndDelete(id);
+      //destroy each image
+      
+      await cloudinary.uploader.destroy(image.public_id);
 
-    console.log(afterDeletion);
+      
+    });
 
-    // Remove the product from user's products array
-    await User.findByIdAndUpdate(
-      req.user,
-      { $pull: { products: id } },
-      { new: true }
-    );
+
+
+     await Product.findByIdAndDelete(id);
+
 
     res.json({
       status: "Success",
       message: "product deleted successfully",
-      deletedproduct: afterDeletion,
+      // deletedproduct: afterDeletion,
     });
   }),
 

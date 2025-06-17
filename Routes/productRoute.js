@@ -28,9 +28,9 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "nodejscreateproductImages",
+    folder: "nodejsproductImages",
     allowedFormat: ["png", "jpeg"],
-    // public_id: (req, file) => file.fieldname + "_" + Date.now(),
+    public_id: (req, file) => file.fieldname + "_" + Date.now(),
   },
 });
 
@@ -80,7 +80,7 @@ productRoute.get("/search",  isAuthenticated,  productCtrl.searchproduct);
 productRoute.get("/:id", isAuthenticated, productCtrl.getCertainproduct);
 
 
-// productRoute.get("/", isAuthenticated,   productCtrl.getAllproduct);
+productRoute.get("/", isAuthenticated,   productCtrl.getAllproduct);
 
 
 

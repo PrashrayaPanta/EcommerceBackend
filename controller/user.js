@@ -6,7 +6,6 @@ const asyncHandler = require("express-async-handler");
 
 const User = require("../model/User.js");
 
-const File = require("../model/File");
 
 const userCtrl = {
   //!Register

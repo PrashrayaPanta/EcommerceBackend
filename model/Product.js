@@ -52,14 +52,13 @@ const productSchema = new mongoose.Schema({
       },
 
       price:{
-        type: Number
-
+        type: Number,
+        required:true
       }
 
     }
 
   ],
-
 
   sizes: [
     {
