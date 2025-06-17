@@ -58,13 +58,16 @@ productRoute.post(
 
 
 
+productRoute.put("/:id", isAuthenticated, isAdmin, productCtrl.updateCertainproduct);
+
+
 productRoute.get("/:categoryName", isAuthenticated, isAdmin,  productCtrl.getAllProductsByCategoryName);
 
 productRoute.get("/latestproduct", isAuthenticated, isAdmin, productCtrl.Latestproducts);
 
 productRoute.get("/search",  isAuthenticated, isAdmin,  productCtrl.searchproduct);
 
-productRoute.patch("/:id", isAuthenticated, isAdmin, productCtrl.updateCertainproduct);
+
 
 productRoute.get("/:id", isAuthenticated, isAdmin, productCtrl.getCertainproduct);
 
@@ -81,6 +84,9 @@ productRoute.get("/:id", isAuthenticated, productCtrl.getCertainproduct);
 
 
 productRoute.get("/", isAuthenticated,   productCtrl.getAllproduct);
+
+
+productRoute.post("/:id/reviews", productCtrl.createCertainProductReviews)
 
 
 

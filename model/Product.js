@@ -98,7 +98,23 @@ const productSchema = new mongoose.Schema({
     required:true
 
 
-  }
+  },
+
+
+  reviews: [
+    {
+      comment: {
+        type: String,
+        required: true,
+      },
+      rating: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5, 
+      },
+    },
+  ]
 });
 
 const Product = mongoose.model("Product", productSchema);

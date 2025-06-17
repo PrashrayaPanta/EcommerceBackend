@@ -151,6 +151,18 @@ const productCtrl = {
     });
   }),
 
+
+
+  EditProduct: asyncHandler(async(req, res) =>{
+
+
+
+
+
+  }),
+
+
+
   getAllproduct: asyncHandler(async (req, res) => {
     const products = await Product.find();
 
@@ -239,32 +251,52 @@ const productCtrl = {
 
   //! Update the product
   updateCertainproduct: asyncHandler(async (req, res) => {
-    const { id } = req.params;
 
-    const { title, description } = req.body;
 
-    // Find the product and verify the user owns it
-    const product = await Product.findOne({ _id: id, author: req.user });
+  console.log("I am inside the edit certain product controoler");
+  
 
-    if (!product) {
-      return res.status(404).json({
-        status: "Failed",
-        message: " you don't have permission to update this product",
-      });
+    const {id} = req.params;
+
+    console.log(id);
+
+
+
+    const {name, description, summary, categoryId, brandId} = req.body;
+
+
+
+    console.log(name, description, summary, categoryId, brandId);
+    
+
+
+    if(!name | !description | !summary | !categoryId | !brandId){
+      throw new Error("Empty value halis");
+
     }
 
-    // Update the product
-    const updatedproduct = await Product.findByIdAndUpdate(
-      id,
-      { title, description },
-      { new: true }
-    );
+    const product = await Product.findById(id);
 
-    res.json({
-      status: "Success",
-      message: "product updated successfully",
-      updatedproduct,
-    });
+
+    // console.log(product);
+    
+    if(product.name === name || product.description === description  || product.summary === summary || product.category_id === categoryId || product.brand_id === brandId ){
+      throw new Error("Same Name");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   }),
 
 
@@ -368,6 +400,40 @@ const productCtrl = {
 
     res.status(200).json({ products });
   }),
+
+
+  createCertainProductReviews:asyncHandler(async(req, res)=>{
+
+
+    const {id} = req.params;
+
+    const product = await Product.findById(id);
+
+
+    console.log(product);
+    
+
+
+    //create the reviews
+
+
+    const {comment, rating} = req.body;
+
+
+    product.reviews.push({comment, rating})
+  
+
+
+    await product.save();
+
+
+    res.json({message:"review Created Succesfully"})
+
+
+  })
+
+
+
 };
 
 module.exports = productCtrl;
