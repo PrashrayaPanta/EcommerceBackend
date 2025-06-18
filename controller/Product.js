@@ -53,7 +53,7 @@ const productCtrl = {
 
     //! Empty Value Validation
   
-    if (!name || !description || !categoryId || !initialPrice || !discountPercentage || !parsedColors || !parsedSizes || !stock) {
+    if (!name || !description || !categoryId || !initialPrice || !discountPercentage || !parsedColors ||  !stock) {
       return res.status(400).json({ message: "Empty value halis" });
     }
 
