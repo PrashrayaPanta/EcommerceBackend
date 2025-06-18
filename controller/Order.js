@@ -6,28 +6,27 @@ const Product = require("../model/Product.js");
 
 const User = require("../model/User.js");
 
-
-
 const Category = require("../model/Category.js");
 const Order = require("../model/Order.js");
 
 const orderCtrl = {
   createOrder: asyncHandler(async (req, res) => {
-    console.log("I am inside createPost");
+    console.log("I am inside create Order");
     console.log(req.body);
 
     // Process items to include product prices
     const processedItems = await Promise.all(
       req.body.map(async (item) => {
         const product = await Product.findById(item.product_id);
+
+        console.log(product);
+
         if (!product) {
           throw new Error(`Product with id ${item.product_id} not found`);
         }
         return {
           product_id: item.product_id,
-          price:
-            product.productprice_afterDiscount ||
-            product.productprice_beforeDiscount,
+          price: product.finalPrice,
           quantity: item.quantity,
         };
       })
@@ -42,9 +41,6 @@ const orderCtrl = {
 
     res.json(createOrder);
 
-
-
-
     console.log(createOrder);
   }),
 
@@ -58,9 +54,7 @@ const orderCtrl = {
 
   getAllOrder: asyncHandler(async (req, res) => {
     const orders = await Order.find().populate("user_id").populate({
-      path: "items.product_id",
-      select:
-        "product_name product_details productprice_beforeDiscount productprice_afterDiscount images",
+      path: "items.product_id"
     });
 
     res.json({ orders });
@@ -121,22 +115,15 @@ const orderCtrl = {
     });
   }),
 
-
-  getCustomerOrderWithProduct: asyncHandler(async(req, res) =>{
-
-    const orders = await Order.find().populate("user_id");
-
+  getCustomerOrderWithProduct: asyncHandler(async (req, res) => {
+    const orders = await Order.find()
+      .populate("user_id", "username email") // Populate user details
+  
 
     console.log(orders);
 
-    res.json({orders})
-
-
-    
-
-
-
-  })
+    res.json({ orders });
+  }),
 };
 
 module.exports = orderCtrl;

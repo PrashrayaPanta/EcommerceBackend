@@ -12,6 +12,7 @@ const orderRoute = express.Router();
 
 orderRoute.post("/create", isAuthenticated,  orderCtrl.createOrder);
 
+
 orderRoute.get("/", isAuthenticated,   orderCtrl.getAllOrder);
 
 
@@ -20,10 +21,9 @@ orderRoute.get("/customer", isAuthenticated, orderCtrl. getCustomerOrderWithProd
 orderRoute.get("/:id", isAuthenticated, orderCtrl.getCertainorder)
 
 
-orderRoute.delete("/:id", isAuthenticated, isAdmin,  orderCtrl.deleteOrder);
+orderRoute.delete("/:id", isAuthenticated, orderCtrl.deleteOrder);
 
 orderRoute.put("/:id", isAuthenticated, isAdmin,  orderCtrl.putOrder);
-
 
 
 

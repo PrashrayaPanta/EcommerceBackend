@@ -3,37 +3,53 @@ const Brand = require("../model/Brand");
 
 const cloudinary = require("cloudinary").v2;// Import the Brand model
 
-const getImageDetailsHandler = async (req, res) => {
+const getImageDetailsHandlerForBrand = async (req, res) => {
 
   try {
 
+    // const {filename1, nodejsProductImages} = req.params;
+
+
+    // console.log(nodejsProductImages);
+    
+
+    
 
     const { filename, nodejsBrandImage } = req.params; // Extract parameters from the request
 
     console.log("Fetching image for:", filename, nodejsBrandImage);
 
     // Combine folder name and filename to form the public ID
-    const publicID = `${nodejsBrandImage}/${filename}`;
+    const publicIDBrand = `${nodejsBrandImage}/${filename}`;
 
-    console.log("Fetching details for publicId:", publicID);
+
+    // const publicIdProduct = `${nodejsProductImages}/${filename1}`
+
+    // console.log("Fetching details for publicId:", publicID);
 
 
     // console.log(publicID)
 
     // Fetch image details from Cloudinary  `
-    const result = await cloudinary.api.resource(publicID);
+    const result = await cloudinary.api.resource(publicIDBrand);
+    // const result1 = await cloudinary.api.resource(publicIdProduct);
 
 
+    // console.log(result1);
+    
 
     // Check if the result contains a secure URL or if the image exists
 
-    // if (!result || !result.secure_url) {
-    //   return res.status(404).json({ message: "Image not found in Cloudinary" });
-    // }
+  
 
+    if (!result || !result.secure_url) {
+      return res.status(404).json({ message: "Image not found in Cloudinary" });
+    }
   
     // Redirect the client to the image URL
     res.redirect(result.secure_url);
+
+
   } catch (error) {
     console.error("Error fetching image details:", error.message);
 
@@ -44,6 +60,39 @@ const getImageDetailsHandler = async (req, res) => {
     });
   }
 };
+
+
+const getImageDetailsHandlerForProduct = async (req, res) =>{
+
+
+    const {filename, nodejsProductImages} = req.params;
+
+
+    console.log(nodejsProductImages);
+
+
+
+
+    // Combine folder name and filename to form the public ID
+    const publicID = `${nodejsProductImages}/${filename}`;
+
+
+        // Fetch image details from Cloudinary  `
+    const result = await cloudinary.api.resource(publicID);
+
+
+    if (!result || !result.secure_url) {
+      return res.status(404).json({ message: "Image not found in Cloudinary" });
+    }
+  
+    // Redirect the client to the image URL
+    res.redirect(result.secure_url);
+
+
+
+
+
+}
 
 const deleteOnlyImageHandler = async (req, res) => {
  
@@ -82,6 +131,7 @@ const deleteOnlyImageHandler = async (req, res) => {
 };
 
 module.exports = {
-  getImageDetailsHandler,
+  getImageDetailsHandlerForBrand,
+  getImageDetailsHandlerForProduct,
   deleteOnlyImageHandler,
 };

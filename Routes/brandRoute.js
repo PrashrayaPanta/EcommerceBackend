@@ -16,7 +16,7 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const { deleteOnlyImageHandler, getImageDetailsHandler} = require("../controller/File.js");
+const { deleteOnlyImageHandler, getImageDetailsHandlerForBrand} = require("../controller/File.js");
 
 
 
@@ -80,7 +80,7 @@ brandRoute.delete("/:id/image/:whichfolderinside/:filename", isAuthenticated, is
 
 
 brandRoute.get("/:nodejsBrandImage/:filename", 
-      getImageDetailsHandler
+      getImageDetailsHandlerForBrand
 );
 
 

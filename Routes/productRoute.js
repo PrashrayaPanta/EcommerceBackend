@@ -13,6 +13,10 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const isAdmin = require("../middleware/isAdmin.js");
 
+
+const { deleteOnlyImageHandler, getImageDetailsHandlerForProduct} = require("../controller/File.js");
+
+
 const cloudinary = require("cloudinary").v2;
 
 //! Configure cloudinary
@@ -57,15 +61,21 @@ productRoute.post(
 );
 
 
+productRoute.get("/:nodejsProductImages/:filename", 
+  getImageDetailsHandlerForProduct
+);
+
+
+
 
 productRoute.put("/:id", isAuthenticated, isAdmin, productCtrl.updateCertainproduct);
 
 
 productRoute.get("/:categoryName", isAuthenticated, isAdmin,  productCtrl.getAllProductsByCategoryName);
 
-productRoute.get("/latestproduct", isAuthenticated, isAdmin, productCtrl.Latestproducts);
+// productRoute.get("/latestproduct", isAuthenticated, isAdmin, productCtrl.Latestproducts);
 
-productRoute.get("/search",  isAuthenticated, isAdmin,  productCtrl.searchproduct);
+// productRoute.get("/search",  isAuthenticated, isAdmin,  productCtrl.searchproduct);
 
 
 
@@ -86,6 +96,10 @@ productRoute.get("/:id", isAuthenticated, productCtrl.getCertainproduct);
 productRoute.get("/", isAuthenticated,   productCtrl.getAllproduct);
 
 
+
+
+
+
 productRoute.post("/:id/reviews", productCtrl.createCertainProductReviews)
 
 
@@ -102,8 +116,6 @@ productRoute.get("/:id", productCtrl.getCertainproduct);
 
 productRoute.get("/frontend/products/:id/category", productCtrl.getCertainproductCategory);
 
-
-productRoute.get("/latestproduct",  productCtrl.Latestproducts);
 
 productRoute.get("/frontend/categories/:id/products", productCtrl.getAllProductByCategoryId)
 

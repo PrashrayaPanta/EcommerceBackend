@@ -53,7 +53,7 @@ const productCtrl = {
 
     //! Empty Value Validation
   
-    if (!name || !description || !categoryId || !initialPrice || !discountPercentage || !parsedColors ||  !stock) {
+    if (!name || !description || !categoryId || !initialPrice || !discountPercentage ||   !stock) {
       return res.status(400).json({ message: "Empty value halis" });
     }
 
@@ -99,6 +99,8 @@ const productCtrl = {
       })
     );
 
+
+
     // Create the product
     const product = await Product.create({
       images,
@@ -128,9 +130,8 @@ const productCtrl = {
     //find product By Id
     const productFound = await Product.findById(id);
 
-    console.log(productFound);
 
-    productFound?.images.map(async image => {
+    productFound?.images?.map(async image => {
 
       //destroy each image
       
@@ -164,10 +165,11 @@ const productCtrl = {
 
 
   getAllproduct: asyncHandler(async (req, res) => {
+
+    console.log("I am lower endpoint")
     const products = await Product.find();
 
-    
-
+  
     res.status(201).json({ products });
 
     //
@@ -280,15 +282,18 @@ const productCtrl = {
 
     // console.log(product);
     
-    if(product.name === name || product.description === description  || product.summary === summary || product.category_id === categoryId || product.brand_id === brandId ){
+    if(product.name === name && product.description === description  && product.summary === summary && product.category_id === categoryId && product.brand_id === brandId ){
       throw new Error("Same Name");
     }
 
 
 
+   const updatedProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId});
 
 
 
+
+    
 
 
 
@@ -407,11 +412,11 @@ const productCtrl = {
 
     const {id} = req.params;
 
-    const product = await Product.findById(id);
-
+    const product = await Product.findById(id).select("-name -description -images -colors -sizes");
 
     console.log(product);
-    
+
+
 
 
     //create the reviews
@@ -422,12 +427,24 @@ const productCtrl = {
 
     product.reviews.push({comment, rating})
   
-
-
     await product.save();
 
 
-    res.json({message:"review Created Succesfully"})
+    res.json({message:"review Created Succesfully", product})
+
+
+  }),
+
+
+
+  getAllProductsReviews: asyncHandler(async(req, res) =>{
+
+      const products = await Product.find();
+
+      console.log(products);
+      
+
+
 
 
   })
