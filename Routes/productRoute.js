@@ -68,7 +68,7 @@ productRoute.get("/:nodejsProductImages/:filename",
 
 
 
-productRoute.put("/:id", isAuthenticated, isAdmin, productCtrl.updateCertainproduct);
+productRoute.put("/:id", isAuthenticated, isAdmin, upload.array("images"), productCtrl.updateCertainproduct);
 
 
 productRoute.get("/:categoryName", isAuthenticated, isAdmin,  productCtrl.getAllProductsByCategoryName);

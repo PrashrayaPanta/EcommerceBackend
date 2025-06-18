@@ -263,6 +263,19 @@ const productCtrl = {
     console.log(id);
 
 
+    console.log(req.files);
+
+
+    const images = await Promise.all(
+      req.files.map(async (file) => {
+        return {
+          url: file.path,
+          public_id: file.filename,
+        };
+      })
+    );
+
+
 
     const {name, description, summary, categoryId, brandId} = req.body;
 
@@ -272,7 +285,7 @@ const productCtrl = {
     
 
 
-    if(!name | !description | !summary | !categoryId | !brandId){
+    if(!name | !description | !summary | !categoryId){
       throw new Error("Empty value halis");
 
     }
@@ -287,8 +300,13 @@ const productCtrl = {
     }
 
 
+    
 
-   const updatedProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId});
+
+   const updatedProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId, brandId ,
+    images
+
+   });
 
 
 
