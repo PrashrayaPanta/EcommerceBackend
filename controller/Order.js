@@ -34,9 +34,19 @@ const orderCtrl = {
 
     console.log(processedItems);
 
+    // Calculate total quantity
+    const totalQuantity = processedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+
+    // caculate total Price
+
+    const totalPrice = processedItems.reduce((sum, item) => sum + item.price, 0);
+
     const createOrder = await Order.create({
       user_id: req.user_id,
       items: processedItems,
+      totalQuantity, // Add total quantity to the order
+      totalPrice: totalPrice
     });
 
     res.json(createOrder);

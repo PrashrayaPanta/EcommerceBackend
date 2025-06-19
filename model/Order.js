@@ -23,6 +23,19 @@ const orderSchema = new mongoose.Schema(
       },
     ],
 
+
+    totalQuantity:{
+      type: Number,
+      required: true
+
+    },
+
+
+    totalPrice:{
+      type:Number,
+      required:true
+    },
+
    
     status: {
       type: String,

@@ -300,9 +300,7 @@ const productCtrl = {
     }
 
 
-    
-
-
+  
    const updatedProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId, brandId ,
     images
 
