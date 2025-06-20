@@ -68,7 +68,7 @@ const userCtrl = {
          username,
          password: hashedPassword,
          email,
-         profileImageUrl: req.file.path,
+         profileImageUrl: req?.file?.path,
 
        });
  

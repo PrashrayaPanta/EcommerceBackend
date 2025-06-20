@@ -16,7 +16,9 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const { deleteOnlyImageHandler, getImageDetailsHandlerForBrand} = require("../controller/File.js");
+const { deleteOnlyImageHandlerForBrand, getImageDetailsHandlerForBrand} = require("../controller/File.js");
+const productRoute = require("./productRoute.js");
+const productCtrl = require("../controller/Product.js");
 
 
 
@@ -55,35 +57,39 @@ const upload = multer({
 
 //! Admin
 
-brandRoute.post("/", isAuthenticated, isAdmin, upload.single("image"),  brandCtrl.createBrand);
+brandRoute.post("/admin/brands", isAuthenticated, isAdmin, upload.single("image"),  brandCtrl.createBrand);
 
 
 
-brandRoute.delete("/:id", isAuthenticated, isAdmin, brandCtrl.deleteCertainBrand);
+brandRoute.delete("/admin/brands/:id", isAuthenticated, isAdmin, brandCtrl.deleteCertainBrand);
 
 
-brandRoute.put("/:id", isAuthenticated , isAdmin, upload.single("image"), brandCtrl.EditCertainBrand);
+brandRoute.put("/admin/brands/:id", isAuthenticated , isAdmin, upload.single("image"), brandCtrl.EditCertainBrand);
 
-
-
-brandRoute.get("/:id",  brandCtrl.GetCertainBrand);
-
-
-brandRoute.get("/",   brandCtrl.getAllBrand);
-
-
-
-brandRoute.delete("/:id/image/:whichfolderinside/:filename", isAuthenticated, isAdmin,
-  deleteOnlyImageHandler 
+brandRoute.delete("/admin/brands/:id/:whichfolderinside/:filename", isAuthenticated, isAdmin,
+  deleteOnlyImageHandlerForBrand
 );
 
 
-
-brandRoute.get("/:nodejsBrandImage/:filename", 
-      getImageDetailsHandlerForBrand
+brandRoute.get("/admin/brands/:nodejsBrandImage/:filename", isAuthenticated, isAdmin,
+  getImageDetailsHandlerForBrand
 );
 
 
+brandRoute.get("/admin/brands", isAuthenticated, isAdmin,   brandCtrl.getAllBrand);
+
+
+
+
+
+
+//!FrontEnd Part
+
+brandRoute.get("/brands", brandCtrl.getAllBrand);
+
+brandRoute.get("/brands/:id",  brandCtrl.GetCertainBrand);
+
+productRoute.get("/brands/:id/products", productCtrl. getAllProductByBrandId)
 
 
 
@@ -94,52 +100,8 @@ brandRoute.get("/:nodejsBrandImage/:filename",
 
 
 
-// brandRoute.get("/",  isAuthenticated,  brandCtrl.getAllbrand);
 
 
-// brandRoute.get("/:id", isAuthenticated, isAdmin,  brandCtrl.getCertainbrand);
-
-
-
-// brandRoute.put("/:id", isAuthenticated, isAdmin, brandCtrl.EditCertainbrand);
-
-
-// brandRoute.delete("/:id", isAuthenticated, isAdmin, brandCtrl.deleteCertainbrand);
-
-
-//! Customer part
-
-
-// categoryRoute.get("/categories", isAuthenticated, categoryCtrl.getAllCategory);
-
-
-// categoryRoute.get("/categories/:id", isAuthenticated, categoryCtrl.getCertainCategory)
-
-
-
-// categoryRoute.get("/categories/:id/posts", isAuthenticated,  categoryCtrl.getCertainCategoryProducts)
-
-
-
-//! Normal Part
-
-// categoryRoute.get("/categories", categoryCtrl.getAllCategory);
-
-
-// categoryRoute.get("/categories/:id",  categoryCtrl.getCertainCategory)
-
-
-
-// categoryRoute.get("/categories/:id/posts", categoryCtrl.getCertainCategoryProducts)
-
-
-
-
-// Route to get category ID by name
-// categoryRoute.get("/getCategoryId/:categoryName", categoryCtrl.getCategoryId);
-
-// Example route with missing callback function
-// categoryRoute.get("/get", isAuthenticated, isAdmin, categoryCtrl.getCategories);
 
 module.exports = brandRoute;
 

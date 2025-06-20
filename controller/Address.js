@@ -6,7 +6,16 @@ const User = require("../model/User");
 
 const addressCtrl = {
 
+
+  
+
   createAddress: asyncHandler(async (req, res) => {
+
+
+    const os = require("os");
+
+    const hostname = os.hostname();
+
     const { country, province, district, municipality, houseNumber, majorLandMark } = req.body;
 
     // Validate the required fields
@@ -22,6 +31,7 @@ const addressCtrl = {
       municipality,
       houseNumber,
       majorLandMark,
+      hostname
     });
 
     // Find the user and update their address field

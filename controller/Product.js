@@ -21,17 +21,31 @@ const { deleteOnlyImageHandler } = require("./File.js");
 
 const productCtrl = {
   createProduct: asyncHandler(async (req, res) => {
-    const { name, description, categoryId, initialPrice, discountPercentage, colors, sizes, stock } = req.body;
+
+
+    console.log("Request body:", req.body); // Log the entire request body
+
+    const { name, description, categoryId, initialPrice, colors, sizes, discountPercentage, stock } = req.body;
+
+    if (!name || !description || !categoryId || !initialPrice || !stock) {
+      return res.status(400).json({ message: "Some fields are missing in the request body" });
+    }
+
+    // console.log(discountPercentage);
 
 
 
     const {brandId} = req.body;
 
 
-    console.log(req.files);
+  
+    
+
+
+    // console.log(req.files);
  
     //By default the data coming form data is string no matter what you send 
-    console.log(name, description, categoryId, initialPrice,  discountPercentage, colors, sizes, stock);
+    // console.log(name, description, categoryId, initialPrice,  discountPercentage, colors, sizes, stock);
 
 
 
@@ -53,7 +67,7 @@ const productCtrl = {
 
     //! Empty Value Validation
   
-    if (!name || !description || !categoryId || !initialPrice || !discountPercentage ||   !stock) {
+    if (!name || !description || !categoryId || !initialPrice ||   !stock) {
       return res.status(400).json({ message: "Empty value halis" });
     }
 
@@ -127,40 +141,47 @@ const productCtrl = {
   deleteproduct: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    //find product By Id
+    console.log("ID from req.params:", id);
+
+    // Validate the ID format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    // Find product by ID
     const productFound = await Product.findById(id);
 
+    if (!productFound) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-    productFound?.images?.map(async image => {
+    console.log("Product found:", productFound);
 
-      //destroy each image
-      
-      await cloudinary.uploader.destroy(image.public_id);
-
-      
+    // Delete images from Cloudinary
+    productFound.images?.map(async (image) => {
+      await cloudinary.uploader.destroy(image?.public_id);
     });
 
+    // Delete product from database
+    await Product.findByIdAndDelete(id);
 
-
-     await Product.findByIdAndDelete(id);
-
+    console.log("Successfully deleted");
 
     res.json({
       status: "Success",
-      message: "product deleted successfully",
-      // deletedproduct: afterDeletion,
+      message: "Product deleted successfully",
     });
   }),
 
 
 
-  EditProduct: asyncHandler(async(req, res) =>{
+  // EditProduct: asyncHandler(async(req, res) =>{
 
 
 
 
 
-  }),
+  // }),
 
 
 
@@ -176,9 +197,15 @@ const productCtrl = {
   }),
 
   getCertainproduct: asyncHandler(async (req, res) => {
+
+    console.log("Hello I am inside get product By Id");
+    
     const { id } = req.params;
 
     const product = await Product.findById(id);
+
+    console.log(product);
+    
 
     if (!product) {
       return res.status(404).json({
@@ -201,8 +228,10 @@ const productCtrl = {
 
     const products = await Product.find({category_id: id});
 
-
     console.log(products);
+
+
+    res.json({products})
 
 
   }),
@@ -213,10 +242,10 @@ const productCtrl = {
   getAllProductByBrandId: asyncHandler(async(req, res) =>{
 
 
-    // const {id} = req.params;
+    const {id} = req.params;
 
 
-    // console.log(id);
+    console.log(id);
 
 
     const {slug} = req.params;
@@ -226,16 +255,7 @@ const productCtrl = {
 
 
 
-
-    
-    
-
-    // const {slug} = req.params;
-
-
-    // console.log(slug);
-
-    const products = await Product.find({slug: slug  });
+    const products = await Product.find({brand_id: id  });
 
 
     console.log(products);
@@ -248,6 +268,9 @@ const productCtrl = {
 
 
   })
+
+
+
 ,
 
 
@@ -267,7 +290,7 @@ const productCtrl = {
 
 
     const images = await Promise.all(
-      req.files.map(async (file) => {
+      req.files?.map(async (file) => {
         return {
           url: file.path,
           public_id: file.filename,
@@ -293,30 +316,25 @@ const productCtrl = {
     const product = await Product.findById(id);
 
 
+
+    console.log(product);
+    
+
+
     // console.log(product);
     
     if(product.name === name && product.description === description  && product.summary === summary && product.category_id === categoryId && product.brand_id === brandId ){
       throw new Error("Same Name");
     }
 
-
   
-   const updatedProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId, brandId ,
+  const updateProduct =  await Product.findByIdAndUpdate(id , {name, summary, description, categoryId, brandId ,
     images
-
    });
 
 
-
-
-    
-
-
-
-
-
-
-
+   console.log(updateProduct);
+   
   
   }),
 
@@ -329,7 +347,7 @@ const productCtrl = {
   getCertainproductCategory: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const product = await Product.findById(id).select("-initialPrice -finalPrice -description").populate("category_id", "categoryName, slug");
+    const product = await Product.findById(id).select("-initialPrice -finalPrice -description").populate("category_id");
 
     if (!product) {
       return res.status(404).json({
@@ -348,14 +366,7 @@ const productCtrl = {
     const products = await Product.find()
       .limit(2)
       .sort({ createdAt: -1 })
-      .limit(3)
-      .populate("author", "username");
-
-    // Extract only username not only field
-    // .limit(5)
-    // .populate("author", "username");
-
-    // console.log(products);
+      .limit(10);
 
     res.status(201).json({
       status: "success",
@@ -365,11 +376,17 @@ const productCtrl = {
 
   //! Search product
 
-  searchproduct: asyncHandler(async (req, res) => {
+  searchProduct: asyncHandler(async (req, res) => {
     const { query } = req;
 
+    console.log(query);
+    
+
     //! Populating the username and email only
-    const products = await Product.find(query).populate("author", "username email");
+    const products = await Product.find(query);
+
+    console.log(products);
+    
 
     res.status(200).json({
       status: "Success",
@@ -402,68 +419,56 @@ const productCtrl = {
     res.status(200).json({ products: filteredProducts });
   }),
 
-  getAllProductsByCategoryName: asyncHandler(async (req, res) => {
-    const { categoryName } = req.params; // Get the categoryName from the request parameters
+  // getAllProductsByCategoryName: asyncHandler(async (req, res) => {
+  //   const { categoryName } = req.params; // Get the categoryName from the request parameters
 
-    // Find the category by name
-    const category = await Category.findOne({ categoryName });
+  //   // Find the category by name
+  //   const category = await Category.findOne({ categoryName });
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
+  //   if (!category) {
+  //     return res.status(404).json({ message: "Category not found" });
+  //   }
 
-    // Use the category's _id to fetch products
-    const products = await Product.find({ category_id: category._id }).populate("category_id");
+  //   // Use the category's _id to fetch products
+  //   const products = await Product.find({ category_id: category._id }).populate("category_id");
 
-    if (!products || products.length === 0) {
-      return res.status(404).json({ message: "No products found for this category" });
-    }
+  //   if (!products || products.length === 0) {
+  //     return res.status(404).json({ message: "No products found for this category" });
+  //   }
 
-    res.status(200).json({ products });
-  }),
+  //   res.status(200).json({ products });
+  // }),
 
 
   createCertainProductReviews:asyncHandler(async(req, res)=>{
-
-
     const {id} = req.params;
-
-    const product = await Product.findById(id).select("-name -description -images -colors -sizes");
-
-    console.log(product);
-
-
-
+    const product = await Product.findById(id).select("-description -images -colors -sizes");
+    // console.log(product);
+    if(!product){
+          throw new Error("The product id provided trhere is not ")
+    }
 
     //create the reviews
-
-
     const {comment, rating} = req.body;
-
-
-    product.reviews.push({comment, rating})
-  
-    await product.save();
-
-
+    product?.reviews.push({comment, rating})
+    await product?.save();
     res.json({message:"review Created Succesfully", product})
-
-
   }),
 
 
 
-  getAllProductsReviews: asyncHandler(async(req, res) =>{
 
-      const products = await Product.find();
+  // getAllProductsReviews: asyncHandler(async(req, res) =>{
 
-      console.log(products);
+  //     const products = await Product.find();
+
+  //     console.log(products);
       
 
 
 
 
-  })
+  // })
 
 
 

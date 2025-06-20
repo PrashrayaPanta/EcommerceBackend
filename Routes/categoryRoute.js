@@ -7,7 +7,17 @@ const isAuthenticated = require("../middleware/isAuth.js");
 const categoryRoute = express.Router();
 
 
+const productRoute = express.Router();
+
+
 const categoryCtrl = require("../controller/Category.js");
+
+
+
+const productCtrl = require("../controller/Product.js")
+
+
+
 const isAdmin = require("../middleware/isAdmin.js");
 
 
@@ -15,22 +25,24 @@ const isAdmin = require("../middleware/isAdmin.js");
 
 //! Admin
 
-categoryRoute.post("/", isAuthenticated, isAdmin,  categoryCtrl.createCategory);
+categoryRoute.post("/admin/categories", isAuthenticated, isAdmin,  categoryCtrl.createCategory);
 
 
 
-categoryRoute.put("/:id", isAuthenticated, isAdmin, categoryCtrl.EditCertainCategory);
+categoryRoute.put("/admin/categories/:id", isAuthenticated, isAdmin, categoryCtrl.EditCertainCategory);
 
 
-categoryRoute.delete("/:id", isAuthenticated, isAdmin, categoryCtrl.deleteCategory);
+categoryRoute.delete("/admin/categories/:id", isAuthenticated, isAdmin, categoryCtrl.deleteCategory);
 
 
-categoryRoute.get("/",  isAuthenticated,   categoryCtrl.getAllCategory);
+categoryRoute.get("/admin/categories", isAuthenticated, isAdmin,   categoryCtrl.getAllCategory);
 
 
 
 
-categoryRoute.get("/:id", isAuthenticated,   categoryCtrl.getCertainCategory);
+
+
+// categoryRoute.get("/:id", isAuthenticated,   categoryCtrl.getCertainCategory);
 
 
 
@@ -38,15 +50,20 @@ categoryRoute.get("/:id", isAuthenticated,   categoryCtrl.getCertainCategory);
 //! Customer part and //!Normal User
 
 
-categoryRoute.get("/frontend/categories",  categoryCtrl.getAllCategory);
+categoryRoute.get("/categories",  categoryCtrl.getAllCategory);
 
 
 
-categoryRoute.get("/frontend/categories/:id",  categoryCtrl.getCertainCategory)
+categoryRoute.get("/categories/:id",  categoryCtrl.getCertainCategory);
 
 
 
-categoryRoute.get("/frontend/categories/:id/posts",   categoryCtrl.getCertainCategoryProducts)
+
+productRoute.get("/categories/:id/products", productCtrl.getAllProductByCategoryId)
+
+
+
+// categoryRoute.get("/frontend/categories/:id/posts",   categoryCtrl.getCertainCategoryProducts)
 
 
 

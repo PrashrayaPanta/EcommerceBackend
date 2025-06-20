@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
 
   discountPercentage: {
       type: Number,
-      default: 0
+      default: 0,
+
   },
 
 
@@ -29,11 +30,11 @@ const productSchema = new mongoose.Schema({
     {
       url: {
         type: String,
-        required: true,
+
       },
       public_id: {
         type: String,
-        required: true,
+  
       },
     }
   ],
@@ -64,11 +65,10 @@ const productSchema = new mongoose.Schema({
     {
       name:{
         type:String,
-        required: true,
+ 
       },
       price:{
         type: Number,
-        required: true,
       }
     }
   ],

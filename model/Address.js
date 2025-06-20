@@ -4,6 +4,7 @@ const addressSchema = new mongoose.Schema({
   country: {
     type: String,
     required: true,
+    unique:true
   },
   province: {
     type: String,
