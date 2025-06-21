@@ -187,6 +187,9 @@ const userCtrl = {
 
     const user = await User.findById(req.user_id);
 
+    console.log(user);
+    
+
     const isMatch = await bcrypt.compare(OldPassword, user.password);
 
     if (!isMatch) {

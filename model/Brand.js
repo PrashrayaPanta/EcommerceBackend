@@ -28,10 +28,8 @@ const brandSchema = new mongoose.Schema(
     },
 
     slug:{
-
       type: String,
       required: true,
-
     }
 
 

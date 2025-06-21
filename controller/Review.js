@@ -9,6 +9,21 @@ const Review = require("../model/Review.js");
 const cloudinary = require("cloudinary").v2;
 
 const reviewCtrl = {
+
+
+  createReview: asyncHandler(async(req, res)=>{
+
+
+      const {comment, rating} = req.body;
+
+
+     const reviewcraeted =   await Review.create({comment, rating});
+
+    res.json({review: reviewcraeted}).status(201);
+
+
+  }),
+
   getReview: asyncHandler(async (req, res) => {
 
     console.log(req.body)

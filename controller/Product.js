@@ -17,6 +17,7 @@ const Category = require("../model/Category.js");
 
 const Brand = require("../model/Brand.js");
 const { deleteOnlyImageHandler } = require("./File.js");
+const Review = require("../model/Review.js");
 
 
 const productCtrl = {
@@ -98,6 +99,18 @@ const productCtrl = {
 
 
     const brandDocById = await Brand.findById(brandId);
+
+
+    console.log(brandDocById);
+
+
+    if(!brandDocById){
+
+      return res.json({message:"That certain id is not present in BraND dOUCMENT"})
+
+
+    }
+    
 
 
 
@@ -222,6 +235,8 @@ const productCtrl = {
 
 
   getAllProductByCategoryId: asyncHandler(async(req, res) =>{
+
+    console.log("I am inside the get all product by category Id")
 
 
     const {id} = req.params;
@@ -396,6 +411,24 @@ const productCtrl = {
     });
   }),
 
+
+
+
+  lowtoHighPriceProduct:asyncHandler(async(req, res) =>{
+
+    console.log("Hellooop I am inside low to hight proce product");
+    
+
+    const products = await Product.find().sort({finalPrice:1})
+
+    res.json({products});
+
+
+
+  }),
+
+
+
   getAllProductsByCategory: asyncHandler(async (req, res) => {
     const { categoryId } = req.params; // Get the category ID from the request parameters
 
@@ -450,13 +483,67 @@ const productCtrl = {
 
     //create the reviews
     const {comment, rating} = req.body;
+
+    // console.log(comment, rating);
+    
     product?.reviews.push({comment, rating})
     await product?.save();
     res.json({message:"review Created Succesfully", product})
   }),
 
 
+  getCertainProductReviews:asyncHandler(async(req, res)=>{
 
+    const {id} = req.params;
+
+
+
+    const productReviews = await Product.findById(id);
+
+
+    res.json({productReviews})
+
+
+
+
+  }),
+
+
+
+
+  deleteCertainProductReview: asyncHandler(async (req, res) => {
+    const { productId, reviewId } = req.params;
+
+    console.log("Product ID:", productId, "Review ID:", reviewId);
+
+    // Validate the product ID
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Filter out the review with the matching reviewId
+    const updatedReviews = product.reviews.filter(
+      (review) => review._id != reviewId
+    );
+
+    // Update the product's reviews array
+    product.reviews = updatedReviews;
+
+    // Save the updated product
+    await product.save();
+
+    res.json({
+      message: "Review deleted successfully",
+      product,
+    });
+  })
 
   // getAllProductsReviews: asyncHandler(async(req, res) =>{
 

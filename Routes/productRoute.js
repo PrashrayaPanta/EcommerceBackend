@@ -96,6 +96,13 @@ productRoute.put("/admin/products/:id", isAuthenticated, isAdmin, upload.array("
 productRoute.delete("/admin/products/:id", isAuthenticated, isAdmin, productCtrl.deleteproduct);
 
 
+productRoute.delete("/admin/products/:productId/reviews/:reviewId", isAuthenticated, isAdmin, productCtrl.deleteCertainProductReview);
+
+
+
+productRoute.get("/admin/products/:id/reviews", isAuthenticated, isAdmin, productCtrl.getCertainProductReviews)
+
+
 
 // productRoute.get("/latestproduct", isAuthenticated,  productCtrl.Latestproducts);
 
@@ -106,6 +113,15 @@ productRoute.delete("/admin/products/:id", isAuthenticated, isAdmin, productCtrl
 
 
 productRoute.post("/products/:id/reviews", isAuthenticated, productCtrl.createCertainProductReviews);
+
+
+productRoute.get("/products/:id/reviews", isAuthenticated, productCtrl.getCertainProductReviews)
+
+
+
+
+
+
 
 
 // productCtrl.get("/cms/reviews", isAuthenticated, isAdmin, )
@@ -125,7 +141,13 @@ productRoute.get("/products/Latestproducts", productCtrl.Latestproducts);
 productRoute.get("/products/search", productCtrl.searchProduct)
 
 
-productRoute.get("/products/:id", productCtrl.getCertainproduct)
+productRoute.get("/products/lowtohigh", productCtrl.lowtoHighPriceProduct);
+
+
+productRoute.get("/products/:id", productCtrl.getCertainproduct);
+
+
+// productRoute.get("/products/categories/:id/products", productCtrl.getAllProductByCategoryId)
 
 //! Top Latest Product
 

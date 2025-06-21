@@ -61,7 +61,7 @@ app.use(express.json());
 app.use("/api", categoryRoute);
 
 
-app.use("/api/users", userRoute);
+app.use("/api", userRoute);
 
 // app.use("/api/order". orderRoute);
 
@@ -73,12 +73,9 @@ app.use("/api/order", orderRoute);
 app.use("/api", brandRoute);
 
 
-app.use("/api/reviews", reviewRoute);
+app.use("/api", reviewRoute);
 
 app.use("/api/address", addressRoute);
-
-
-app.use("/api/device", deviceRoute)
 
 
 

@@ -6,13 +6,14 @@ const isAdmin = require("../middleware/isAdmin");
 
 
 
-
+const productRoute = require("../Routes/productRoute.js");
+const productCtrl = require("../controller/Product.js");
 
 
 
 const reviewRoute = express.Router();
 
-reviewRoute.get("/", isAuthenticated,  reviewCtrl.getReview);
+reviewRoute.post("/reviews", isAuthenticated,  reviewCtrl.createReview);
 
 
 

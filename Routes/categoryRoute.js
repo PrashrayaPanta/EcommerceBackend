@@ -7,7 +7,7 @@ const isAuthenticated = require("../middleware/isAuth.js");
 const categoryRoute = express.Router();
 
 
-const productRoute = express.Router();
+
 
 
 const categoryCtrl = require("../controller/Category.js");
@@ -16,6 +16,9 @@ const categoryCtrl = require("../controller/Category.js");
 
 const productCtrl = require("../controller/Product.js")
 
+
+
+const productRoute = require("./productRoute.js");
 
 
 const isAdmin = require("../middleware/isAdmin.js");

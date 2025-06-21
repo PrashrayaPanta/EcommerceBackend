@@ -36,6 +36,9 @@ const isAuthenticated = async (req, res, next) => {
     console.log(verifyToken);
     req.user_id = verifyToken.id;
 
+
+    console.log(req.user_id);
+
     next();
   } else {
   

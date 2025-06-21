@@ -17,6 +17,8 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
 const { deleteOnlyImageHandlerForBrand, getImageDetailsHandlerForBrand} = require("../controller/File.js");
+
+
 const productRoute = require("./productRoute.js");
 const productCtrl = require("../controller/Product.js");
 

@@ -39,48 +39,48 @@ const upload = multer({
 
 const userRoute = express.Router();
 
-userRoute.post("/register", upload.single("image"), userCtrl.register);
-userRoute.post("/login", userCtrl.login); // Login
+userRoute.post("/users/register", upload.single("image"), userCtrl.register);
+userRoute.post("/users/login", userCtrl.login); // Login
 
 //! Admin  Route
 
 
 
-userRoute.get("/profile", isAuthenticated,   userCtrl.Profile);
+userRoute.get("/users/profile", isAuthenticated,   userCtrl.Profile);
 userRoute.put(
-  "/profile/edit",
+  "/users/profile/edit",
   isAuthenticated,
   // isAdmin,
   userCtrl.EditProfile
 ); // Edit profile
 
 userRoute.put(
-  "/profile/password",
+  "/users/profile/password",
   isAuthenticated,
   // isAdmin,
   userCtrl.EditPassword
 ); // Update password
 userRoute.delete(
-  "/profile/:id",
+  "/users/profile/:id",
   isAuthenticated,
   isAdmin,
   userCtrl.DeleteAccount
 ); // Delete account
 
-//! Customer Route
 
-userRoute.get("/customer/profile", isAuthenticated, userCtrl.Profile); // Get profile
-userRoute.put("/customer/profile/edit", isAuthenticated, userCtrl.EditProfile); // Edit profile
-userRoute.put(
-  "/customer/profile/password",
-  isAuthenticated,
-  userCtrl.EditPassword
-); // Update password
-userRoute.delete(
-  "/customer/profile/:id",
-  isAuthenticated,
-  userCtrl.DeleteAccount
-);
+
+// userRoute.get("/customer/profile", isAuthenticated, userCtrl.Profile); // Get profile
+// userRoute.put("/customer/profile/edit", isAuthenticated, userCtrl.EditProfile); // Edit profile
+// userRoute.put(
+//   "/customer/profile/password",
+//   isAuthenticated,
+//   userCtrl.EditPassword
+// ); // Update password
+// userRoute.delete(
+//   "/customer/profile/:id",
+//   isAuthenticated,
+//   userCtrl.DeleteAccount
+// );
 
 
 
