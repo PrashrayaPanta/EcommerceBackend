@@ -26,12 +26,7 @@ const addressRoute = require("./Routes/addressRoute.js");
 const reviewRoute = require("./Routes/reviewRoute.js");
 const deviceRoute = require("./Routes/deviceRoute.js");
 
-
-
-
-
-
-
+const subCategoryRoute = require("./Routes/subCategoryRoute.js");
 
 const PORT = process.env.PORT || 3000;
 
@@ -60,6 +55,7 @@ app.use(express.json());
 
 app.use("/api", categoryRoute);
 
+app.use("/api", subCategoryRoute);
 
 app.use("/api", userRoute);
 
@@ -69,15 +65,11 @@ app.use("/api", productRoute);
 
 app.use("/api/order", orderRoute);
 
-
 app.use("/api", brandRoute);
-
 
 app.use("/api", reviewRoute);
 
 app.use("/api/address", addressRoute);
-
-
 
 //!Error handler
 

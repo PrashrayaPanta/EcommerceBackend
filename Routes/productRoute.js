@@ -147,6 +147,10 @@ productRoute.get("/products/lowtohigh", productCtrl.lowtoHighPriceProduct);
 productRoute.get("/products/:id", productCtrl.getCertainproduct);
 
 
+
+productRoute.get("/sub-categories/:id/products", productCtrl.getAllProductsBySubCategoryId)
+
+
 // productRoute.get("/products/categories/:id/products", productCtrl.getAllProductByCategoryId)
 
 //! Top Latest Product

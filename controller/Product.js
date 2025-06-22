@@ -15,6 +15,10 @@ const Category = require("../model/Category.js");
 
 
 
+const subCategory = require("../model/SubCategory.js")
+
+
+
 const Brand = require("../model/Brand.js");
 const { deleteOnlyImageHandler } = require("./File.js");
 const Review = require("../model/Review.js");
@@ -39,8 +43,16 @@ const productCtrl = {
     const {brandId} = req.body;
 
 
+    const {subcategoryId} = req.body;
   
     
+    const subcategoryIdFound = await subCategory.findById(subcategoryId);
+
+
+
+    if(!subcategoryIdFound){
+        throw new Error("Sub Category Id is not present ")
+    }
 
 
     // console.log(req.files);
@@ -141,7 +153,9 @@ const productCtrl = {
       sizes: parsedSizes,
       stock,
       category_id: categoryDocById._id,
-      brand_id: brandDocById._id
+      brand_id: brandDocById._id,
+      subCategory: subcategoryIdFound._id
+
     });
 
 
@@ -187,15 +201,43 @@ const productCtrl = {
   }),
 
 
+  deleteCertainProductReview: asyncHandler(async (req, res) => {
+    const { productId, reviewId } = req.params;
 
-  // EditProduct: asyncHandler(async(req, res) =>{
+    console.log("Product ID:", productId, "Review ID:", reviewId);
+
+    // Validate the product ID
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Filter out the review with the matching reviewId
+    const updatedReviews = product.reviews.filter(
+      (review) => review._id != reviewId
+    );
 
 
+    console.log(updatedReviews);
+    
 
+    // Update the product's reviews array
+    product.reviews = updatedReviews;
 
+    // Save the updated product
+    await product.save();
 
-  // }),
-
+    res.json({
+      message: "Review deleted successfully",
+      product,
+    });
+  }),
 
 
   getAllproduct: asyncHandler(async (req, res) => {
@@ -279,6 +321,29 @@ const productCtrl = {
     res.json({products})
 
 
+
+
+
+  }),
+
+
+
+  getAllProductsBySubCategoryId:asyncHandler(async(req, res) =>{
+
+
+      const {id} = req.params;
+
+
+
+      const products = await Product.find({subCategory: id});
+
+
+
+      console.log(products);
+
+
+      res.json({products})
+      
 
 
 
@@ -511,39 +576,10 @@ const productCtrl = {
 
 
 
-  deleteCertainProductReview: asyncHandler(async (req, res) => {
-    const { productId, reviewId } = req.params;
 
-    console.log("Product ID:", productId, "Review ID:", reviewId);
 
-    // Validate the product ID
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "Invalid product ID" });
-    }
 
-    // Find the product by ID
-    const product = await Product.findById(productId);
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    // Filter out the review with the matching reviewId
-    const updatedReviews = product.reviews.filter(
-      (review) => review._id != reviewId
-    );
-
-    // Update the product's reviews array
-    product.reviews = updatedReviews;
-
-    // Save the updated product
-    await product.save();
-
-    res.json({
-      message: "Review deleted successfully",
-      product,
-    });
-  })
 
   // getAllProductsReviews: asyncHandler(async(req, res) =>{
 

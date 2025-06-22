@@ -110,7 +110,14 @@ const productSchema = new mongoose.Schema({
         max: 5, 
       },
     },
-  ]
+  ],
+
+  subCategory:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"SubCategory",
+  }
+
+
 });
 
 const Product = mongoose.model("Product", productSchema);
