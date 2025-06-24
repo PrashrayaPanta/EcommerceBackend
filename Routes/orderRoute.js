@@ -10,22 +10,20 @@ const orderCtrl = require("../controller/Order");
 
 const orderRoute = express.Router();
 
-orderRoute.post("/create", isAuthenticated,  orderCtrl.createOrder);
+orderRoute.post("/orders", isAuthenticated,  orderCtrl.createOrder);
 
 
-orderRoute.get("/", isAuthenticated,   orderCtrl.getAllOrder);
+orderRoute.get("/orders", isAuthenticated,   orderCtrl.getAllOrder);
 
 
 orderRoute.get("/customer", isAuthenticated, orderCtrl. getCustomerOrderWithProduct)
 
-orderRoute.get("/:id", isAuthenticated, orderCtrl.getCertainorder)
+orderRoute.get("/orders/:id", isAuthenticated, orderCtrl.getCertainorder)
 
 
-orderRoute.delete("/:id", isAuthenticated, orderCtrl.deleteOrder);
+orderRoute.delete("/orders/:id", isAuthenticated, orderCtrl.deleteOrder);
 
-orderRoute.put("/:id", isAuthenticated, isAdmin,  orderCtrl.putOrder);
-
-
+orderRoute.put("/orders/:id", isAuthenticated, isAdmin,  orderCtrl.putOrder);
 
 
  

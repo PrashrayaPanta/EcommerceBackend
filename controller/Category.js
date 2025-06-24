@@ -27,7 +27,7 @@ const categoryCtrl = {
 
     const categoryCreated = await Category.create({ name, slug });
 
-    res.status(201).json({ message: "Created successfully", categoryCreated });
+    res.status(201).json({ categoryCreated });
   }),
 
   deleteCategory: asyncHandler(async (req, res) => {
@@ -47,7 +47,7 @@ const categoryCtrl = {
     console.log("I am inside get all category");
     const Categories = await Category.find();
 
-    res.json({ message: "Get all category", Categories }).status(203);
+    res.json({  Categories }).status(203);
   }),
 
   getCertainCategory: asyncHandler(async (req, res) => {

@@ -23,10 +23,14 @@ const orderRoute = require("./Routes/orderRoute.js");
 const brandRoute = require("./Routes/brandRoute.js");
 const addressRoute = require("./Routes/addressRoute.js");
 
+
+
+
 const reviewRoute = require("./Routes/reviewRoute.js");
-const deviceRoute = require("./Routes/deviceRoute.js");
+
 
 const subCategoryRoute = require("./Routes/subCategoryRoute.js");
+const cartRoute = require("./Routes/cartRoute.js");
 
 const PORT = process.env.PORT || 3000;
 
@@ -63,11 +67,14 @@ app.use("/api", userRoute);
 
 app.use("/api", productRoute);
 
-app.use("/api/order", orderRoute);
+app.use("/api", orderRoute);
 
 app.use("/api", brandRoute);
 
 app.use("/api", reviewRoute);
+
+
+app.use("/api", cartRoute)
 
 app.use("/api/address", addressRoute);
 

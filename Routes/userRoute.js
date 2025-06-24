@@ -6,7 +6,7 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const isAdmin = require("../middleware/isAdmin");
 
-
+const nodemailer = require("nodemailer");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -37,16 +37,16 @@ const upload = multer({
   },
 });
 
+
+
 const userRoute = express.Router();
 
-userRoute.post("/users/register", upload.single("image"), userCtrl.register);
+userRoute.post("/users/register",  upload.single("image"), userCtrl.register);
 userRoute.post("/users/login", userCtrl.login); // Login
 
 //! Admin  Route
 
-
-
-userRoute.get("/users/profile", isAuthenticated,   userCtrl.Profile);
+userRoute.get("/users/profile", isAuthenticated, userCtrl.Profile);
 userRoute.put(
   "/users/profile/edit",
   isAuthenticated,
@@ -67,8 +67,6 @@ userRoute.delete(
   userCtrl.DeleteAccount
 ); // Delete account
 
-
-
 // userRoute.get("/customer/profile", isAuthenticated, userCtrl.Profile); // Get profile
 // userRoute.put("/customer/profile/edit", isAuthenticated, userCtrl.EditProfile); // Edit profile
 // userRoute.put(
@@ -81,8 +79,6 @@ userRoute.delete(
 //   isAuthenticated,
 //   userCtrl.DeleteAccount
 // );
-
-
 
 // Delete account
 

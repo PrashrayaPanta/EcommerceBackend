@@ -12,14 +12,11 @@ const Order = require("../model/Order.js");
 const orderCtrl = {
   createOrder: asyncHandler(async (req, res) => {
     console.log("I am inside create Order");
-    console.log(req.body);
 
     // Process items to include product prices
     const processedItems = await Promise.all(
       req.body.map(async (item) => {
         const product = await Product.findById(item.product_id);
-
-        console.log(product);
 
         if (!product) {
           throw new Error(`Product with id ${item.product_id} not found`);
@@ -32,32 +29,52 @@ const orderCtrl = {
       })
     );
 
-    console.log(processedItems);
-
-    // Calculate total quantity
+    // Calculate total quantity and total price
     const totalQuantity = processedItems.reduce((sum, item) => sum + item.quantity, 0);
-
-
-    // caculate total Price
-
     const totalPrice = processedItems.reduce((sum, item) => sum + item.price, 0);
 
+    // Create the order
     const createOrder = await Order.create({
       user_id: req.user_id,
       items: processedItems,
-      totalQuantity, // Add total quantity to the order
-      totalPrice: totalPrice
+      totalQuantity,
+      totalPrice,
     });
 
-    res.json(createOrder);
+    // Find the user and update their orders array
+    const userFound = await User.findById(req.user_id);
 
-    console.log(createOrder);
+    if (!userFound) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    userFound.orders.push(createOrder._id); // Push the new order ID into the orders array
+    await userFound.save();
+
+  
+ 
+
+    res.json({
+      message: "Order created successfully",
+      order: createOrder,
+
+    });
   }),
 
   deleteOrder: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const order = await Order.findByIdAndDelete(id);
+
+
+    const userFound = await User.findById(req.user_id);
+
+
+    userFound
+
+
+
+
 
     res.json({ message: "succesfully delteed", deleteOrder: order });
   }),

@@ -48,7 +48,7 @@ const addressCtrl = {
 
     console.log(userFound);
 
-    const populatedUser = await User.findById(userFound._id).populate("address");
+
   
 
     res.status(201).json({ message: "Address created successfully", address });

@@ -7,14 +7,63 @@ const asyncHandler = require("express-async-handler");
 const User = require("../model/User.js");
 
 
+const sendEmail = async (email, uniqueNumber) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.NODEMAILER_EMAIL, // Loaded from .env
+      pass: process.env.NODEMAILER_EMAIL_APP_Password, // Loaded from .env
+    },
+  });
+
+  const mailformatObject = {
+    from: "<Email Verification>",
+    to: email,
+    subject: "Prashraya Has sent email successfully",
+    text: `otp:${uniqueNumber} `,
+  };
+
+  try {
+    await transporter.sendMail(mailformatObject); // Corrected method
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
 const userCtrl = {
+
+
   //!Register
 
   register: asyncHandler(async (req, res) => {
 
 
+
+    // Generate 4-digit random number
+
+        const uniqueNumber = Math.floor(1000 + Math.random() * 9000); // 
+        console.log(uniqueNumber);
+
+    
+
+
       const { username, email, password } = req.body;
 
+
+
+
+      sendEmail(email, uniqueNumber);
+
+
+
+
+
+
+ 
+    
 
       console.log(req.file);
       
@@ -125,8 +174,17 @@ const userCtrl = {
   //! Profile
 
   Profile: asyncHandler(async (req, res) => {
-    // Find the user and populate the address field
-    const user = await User.findById(req.user_id).select("-password").populate("address");
+    // Find the user and populate the address, orders, and product details inside items
+    const user = await User.findById(req.user_id)
+      .select("-password") // Exclude the password field
+      .populate("address") // Populate the address field
+      .populate({
+        path: "orders", // Populate the orders field
+        populate: {
+          path: "items.product_id", // Populate product_id inside items
+          select: "name description finalPrice", // Select specific fields from the Product model
+        },
+      });
 
     if (!user) {
       throw new Error("User not found");

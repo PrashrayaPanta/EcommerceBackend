@@ -443,6 +443,8 @@ const productCtrl = {
   }),
 
   Latestproducts: asyncHandler(async (req, res) => {
+
+    console.log("I am inside the latest products")
     const products = await Product.find()
       .limit(2)
       .sort({ createdAt: -1 })
